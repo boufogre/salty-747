@@ -17,6 +17,8 @@ jobs:
       INSTALLER_PRE_RELEASE_ID: 64499039
       INSTALLER_PRE_RELEASE_TAG: vinstaller
       BUILD_DIR_NAME: vdev
+      CLIENT_ID: ${{ secrets.NG_CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.NG_CLIENT_SECRET }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -25,7 +27,7 @@ jobs:
       - name: Build Salty-747
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 20
       - run: |
           npm i
           npm run build
@@ -90,6 +92,6 @@ jobs:
           fi
       - name: Upload installer zip assets
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          hub release edit $(find build-modules -type f -printf "-a %p ") -m "" "${{ env.INSTALLER_PRE_RELEASE_TAG }}"
+          gh release upload "${{ env.INSTALLER_PRE_RELEASE_TAG }}" $(find build-modules -type f -printf "%p ")
